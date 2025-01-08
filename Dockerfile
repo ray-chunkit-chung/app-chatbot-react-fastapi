@@ -1,10 +1,12 @@
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
+    nodejs \
+    npm \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first to leverage Docker cache
@@ -18,8 +20,9 @@ RUN pip install --no-cache-dir -r dev-requirements.txt
 # Copy backend code
 COPY backend/ ./backend/
 
-# Copy frontend build files
-COPY frontend/out/ ./backend/static/
+# Copy frontend code and build it
+COPY frontend/ ./frontend/
+RUN cd frontend && npm install && npm run build && cp -r build/* ../backend/static/
 
 # Expose the port
 EXPOSE 8000
