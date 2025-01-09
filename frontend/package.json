@@ -9,7 +9,8 @@
     "lint": "next lint",
     "clean": "rimraf .next node_modules package-lock.json",
     "clean:cache": "npm cache clean --force",
-    "reinstall": "npm run clean && npm run clean:cache && npm install"
+    "reinstall": "npm run clean && npm run clean:cache && npm install",
+    "rebuild": "npm run reinstall && npm run build"
   },
   "dependencies": {
     "next": "15.1.4",

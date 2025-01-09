@@ -1,13 +1,21 @@
-FROM python:3.12-slim
+# ====================================
+# Build the frontend
+# ====================================
+FROM node:22 AS frontend
+
+WORKDIR /app/frontend
+
+COPY frontend /app/frontend
+
+RUN npm run rebuild
+
+
+# ====================================
+# Backend
+# ====================================
+FROM python:3.12 AS backend
 
 WORKDIR /app
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    nodejs \
-    npm \
-    && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first to leverage Docker cache
 COPY backend/requirements.txt .
@@ -17,12 +25,16 @@ COPY backend/dev-requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir -r dev-requirements.txt
 
-# Copy backend code
-COPY backend/ ./backend/
+COPY --from=frontend /app/frontend/out /app/static
+COPY backend/main.py .
 
-# Copy frontend code and build it
-COPY frontend/ ./frontend/
-RUN cd frontend && npm install && npm run build && cp -r build/* ../backend/static/
+# ====================================
+# Release
+# ====================================
+
+FROM backend AS release
+
+WORKDIR /app
 
 # Expose the port
 EXPOSE 8000
@@ -32,4 +44,4 @@ ENV PYTHONPATH=/app
 ENV PORT=8000
 
 # Start the FastAPI application
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
