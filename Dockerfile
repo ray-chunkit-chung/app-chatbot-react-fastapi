@@ -7,7 +7,7 @@ WORKDIR /app/frontend
 
 COPY frontend /app/frontend
 
-RUN npm run rebuild
+RUN npm install && npm run build
 
 
 # ====================================
