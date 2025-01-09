@@ -1,5 +1,10 @@
 # app-chatbot-react-fastapi
 
+### Link
+<https://test1.agreeablesky-0f350fca.australiaeast.azurecontainerapps.io/>
+
+### Build and Run
+
 ```bash
 docker build -t raychung/app-chatbot-react-fastapi:latest .
 
