@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "clean": "rimraf .next node_modules package-lock.json",
+    "clean": "rimraf .next node_modules out package-lock.json",
     "clean:cache": "npm cache clean --force",
     "reinstall": "npm run clean && npm run clean:cache && npm install",
     "rebuild": "npm run reinstall && npm run build"
