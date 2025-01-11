@@ -40,8 +40,8 @@ python3.12 -m venv .venv
 cd backend
 rmdir /s /q static
 xcopy ..\frontend\out static /e /i
-pip install -r requirements.txt
-pip install -r dev-requirements.txt
+pip install --upgrade -r requirements.txt
+pip install --upgrade  -r dev-requirements.txt
 uvicorn main:app --port 8000 --reload
 ```
 
