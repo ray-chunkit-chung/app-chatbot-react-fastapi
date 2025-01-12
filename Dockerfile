@@ -27,6 +27,7 @@ RUN pip install --no-cache-dir -r dev-requirements.txt
 
 COPY --from=frontend /app/frontend/out /app/static
 COPY backend/main.py .
+COPY backend/app .
 
 # ====================================
 # Release
