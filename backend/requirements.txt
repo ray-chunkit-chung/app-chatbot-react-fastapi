@@ -4,5 +4,6 @@ python-dotenv
 httpx
 llama-index
 llama-index-llms-openai
+llama-index-agent-openai
 pydantic
 aiostream

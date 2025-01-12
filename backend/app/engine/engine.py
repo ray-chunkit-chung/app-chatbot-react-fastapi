@@ -5,6 +5,11 @@ from llama_index.core.agent import AgentRunner
 from llama_index.core.callbacks import CallbackManager
 from llama_index.core.tools import BaseTool
 from llama_index.llms.openai import OpenAI
+from llama_index.agent.openai import OpenAIAgentWorker, OpenAIAgent
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def get_chat_engine(params=None, event_handlers=None, **kwargs):
     system_prompt = os.getenv("SYSTEM_PROMPT")
@@ -19,11 +24,11 @@ def get_chat_engine(params=None, event_handlers=None, **kwargs):
         temperature=int(llm_temperature),
         api_key=llm_api_key,
     )
-
-    return AgentRunner.from_llm(
+    openai_step_engine = OpenAIAgentWorker.from_tools(
         llm=llm,
         tools=tools,
         system_prompt=system_prompt,
         callback_manager=callback_manager,
         verbose=True,
     )
+    return AgentRunner(openai_step_engine)
