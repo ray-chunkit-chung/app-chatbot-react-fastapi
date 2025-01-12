@@ -42,7 +42,8 @@ rmdir /s /q static
 xcopy ..\frontend\out static /e /i
 pip install --upgrade -r requirements.txt
 pip install --upgrade  -r dev-requirements.txt
-uvicorn main:app --port 8000 --reload
+# uvicorn main:app --port 8000 --reload
+python main.py
 ```
 
 ```bash
@@ -54,3 +55,7 @@ cd frontend
 npm run reinstall
 npm run dev
 ```
+
+## Fastapi starter
+
+<https://github.com/itacode/fastapi-starter/blob/main/app/main.py>

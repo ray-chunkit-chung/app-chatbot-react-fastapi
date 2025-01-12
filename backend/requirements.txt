@@ -1,3 +1,8 @@
 fastapi
 uvicorn
+python-dotenv
 httpx
+llama-index
+llama-index-llms-openai
+pydantic
+aiostream
