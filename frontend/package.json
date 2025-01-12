@@ -13,6 +13,9 @@
     "rebuild": "npm run reinstall && npm run build"
   },
   "dependencies": {
+    "@llamaindex/chat-ui": "^0.0.13",
+    "llamaindex": "^0.8.31",
+    "ai": "^4.0.33",
     "next": "15.1.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
