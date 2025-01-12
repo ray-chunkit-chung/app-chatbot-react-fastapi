@@ -5,7 +5,6 @@ export interface ChatConfig {
 }
 
 function getBackendOrigin(): string {
-  // Use type nul > .env.local
   const chatAPI = process.env.NEXT_PUBLIC_CHAT_API;
   if (chatAPI) {
     return new URL(chatAPI).origin;
