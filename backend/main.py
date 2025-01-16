@@ -27,10 +27,10 @@ app.add_middleware(
 app.include_router(api_router, prefix="/api")
 
 # Serve the static files from the "out" directory
-url_path = "/"
-static_files = "static"
-logger.info(f"Mounting static files '{static_files}' at '{url_path}'")
-app.mount(url_path, StaticFiles(directory=static_files, html=True), name="static")
+# url_path = "/"
+# static_files = "static"
+# logger.info(f"Mounting static files '{static_files}' at '{url_path}'")
+# app.mount(url_path, StaticFiles(directory=static_files, html=True), name="static")
 
 
 

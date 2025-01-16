@@ -10,7 +10,7 @@ from llama_index.core.schema import NodeWithScore
 
 from app.api.routers.events import EventCallbackHandler
 from app.api.routers.models import ChatData, Message, SourceNodes
-# from app.api.services.suggestion import NextQuestionSuggestion
+from app.api.services.suggestion import NextQuestionSuggestion
 
 logger = logging.getLogger("uvicorn")
 
@@ -121,11 +121,11 @@ class VercelStreamResponse(StreamingResponse):
             yield cls.convert_text(token)
 
         # Generate next questions if next question prompt is configured
-        # question_data = await cls._generate_next_questions(
-        #     chat_data.messages, final_response
-        # )
-        # if question_data:
-        #     yield cls.convert_data(question_data)
+        question_data = await cls._generate_next_questions(
+            chat_data.messages, final_response
+        )
+        if question_data:
+            yield cls.convert_data(question_data)
 
         # the text_generator is the leading stream, once it's finished, also finish the event stream
         event_handler.is_done = True
@@ -164,14 +164,14 @@ class VercelStreamResponse(StreamingResponse):
             )
             pass
 
-    # @staticmethod
-    # async def _generate_next_questions(chat_history: List[Message], response: str):
-    #     questions = await NextQuestionSuggestion.suggest_next_questions(
-    #         chat_history, response
-    #     )
-    #     if questions:
-    #         return {
-    #             "type": "suggested_questions",
-    #             "data": questions,
-    #         }
-    #     return None
+    @staticmethod
+    async def _generate_next_questions(chat_history: List[Message], response: str):
+        questions = await NextQuestionSuggestion.suggest_next_questions(
+            chat_history, response
+        )
+        if questions:
+            return {
+                "type": "suggested_questions",
+                "data": questions,
+            }
+        return None
