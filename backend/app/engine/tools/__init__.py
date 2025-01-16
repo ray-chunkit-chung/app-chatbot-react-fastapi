@@ -8,13 +8,13 @@ from llama_index.core.tools.tool_spec.base import BaseToolSpec
 
 
 class ToolType:
-    # LLAMAHUB = "llamahub"
+    LLAMAHUB = "llamahub"
     LOCAL = "local"
 
 
 class ToolFactory:
     TOOL_SOURCE_PACKAGE_MAP = {
-        # ToolType.LLAMAHUB: "llama_index.tools",
+        ToolType.LLAMAHUB: "llama_index.tools",
         ToolType.LOCAL: "app.engine.tools",
     }
 

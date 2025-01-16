@@ -8,11 +8,16 @@ from pydantic import BaseModel, Field, validator
 from pydantic.alias_generators import to_camel
 
 from app.config import DATA_DIR
+from app.services.file import DocumentFile
 
 logger = logging.getLogger("uvicorn")
 
 
 class AnnotationFileData(BaseModel):
+    files: List[DocumentFile] = Field(
+        default=[],
+        description="List of files",
+    )
 
     class Config:
         json_schema_extra = {
@@ -26,6 +31,41 @@ class AnnotationFileData(BaseModel):
             }
         }
         alias_generator = to_camel
+
+    @staticmethod
+    def _get_url_llm_content(file: DocumentFile) -> Optional[str]:
+        url_prefix = os.getenv("FILESERVER_URL_PREFIX")
+        if url_prefix:
+            if file.url is not None:
+                return f"File URL: {file.url}\n"
+            else:
+                # Construct url from file name
+                return f"File URL (instruction: do not update this file URL yourself): {url_prefix}/output/uploaded/{file.name}\n"
+        else:
+            logger.warning(
+                "Warning: FILESERVER_URL_PREFIX not set in environment variables. Can't use file server"
+            )
+            return None
+
+    @classmethod
+    def _get_file_content(cls, file: DocumentFile) -> str:
+        """
+        Construct content for LLM from the file metadata
+        """
+        default_content = f"=====File: {file.name}=====\n"
+        # Include file URL if it's available
+        url_content = cls._get_url_llm_content(file)
+        if url_content:
+            default_content += url_content
+        # Include document IDs if it's available
+        if file.refs is not None:
+            default_content += f"Document IDs: {file.refs}\n"
+        # file path
+        sandbox_file_path = f"/tmp/{file.name}"
+        local_file_path = f"output/uploaded/{file.name}"
+        default_content += f"Sandbox file path (instruction: only use sandbox path for artifact or code interpreter tool): {sandbox_file_path}\n"
+        default_content += f"Local file path (instruction: Use for local tools: form filling, extractor): {local_file_path}\n"
+        return default_content
 
     def to_llm_content(self) -> Optional[str]:
         file_contents = [self._get_file_content(file) for file in self.files]
@@ -205,6 +245,19 @@ class ChatData(BaseModel):
                 document_ids.extend(refs)
         return list(set(document_ids))
 
+    def get_document_files(self) -> List[DocumentFile]:
+        """
+        Get the uploaded files from the chat data
+        """
+        uploaded_files = []
+        for message in self.messages:
+            if message.role == MessageRole.USER and message.annotations is not None:
+                for annotation in message.annotations:
+                    if annotation.type == "document_file" and isinstance(
+                        annotation.data, AnnotationFileData
+                    ):
+                        uploaded_files.extend(annotation.data.files)
+        return uploaded_files
 
 
 class SourceNodes(BaseModel):
