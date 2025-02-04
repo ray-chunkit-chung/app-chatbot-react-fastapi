@@ -1,8 +1,9 @@
 # app-chatbot-react-fastapi
 
-## Link
+## Link to Demo
 
 <https://test1.agreeablesky-0f350fca.australiaeast.azurecontainerapps.io/>
+![image](https://github.com/user-attachments/assets/492f88c4-b18e-41f8-89a6-5a1b6c771020)
 
 ## Build and Run
 
